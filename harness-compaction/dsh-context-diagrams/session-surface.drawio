@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="31.1.8">
+  <diagram name="session-surface" id="session-surface">
+    <mxGraphModel dx="1300" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Session Log 与 Surface 派生：模型上下文的唯一来源" style="text;html=1;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="340" y="10" width="560" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="loglane" value="Session Log（append-only 事件流）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="340" height="760" as="geometry" />
+        </mxCell>
+        <mxCell id="g-surface" value="表面事件 SURFACE_EVENT_TYPES" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="loglane">
+          <mxGeometry x="20" y="50" width="300" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" value="user/message（含插件注入消息）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="g-surface">
+          <mxGeometry x="20" y="40" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" value="assistant/message" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="g-surface">
+          <mxGeometry x="20" y="84" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="r3" value="工具调用与工具结果" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="g-surface">
+          <mxGeometry x="20" y="128" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="r4" value="request/header（config + tools 信封）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="g-surface">
+          <mxGeometry x="20" y="172" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="r5" value="request/context（provider / model / prompt）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="g-surface">
+          <mxGeometry x="20" y="216" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="g-logonly" value="log-only 事件（模型不可见）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;" vertex="1" parent="loglane">
+          <mxGeometry x="20" y="380" width="300" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="compaction/start · end · prune" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="g-logonly">
+          <mxGeometry x="20" y="40" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" value="compaction/summary（摘要调用记录）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="g-logonly">
+          <mxGeometry x="20" y="84" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" value="assistant/attempt（失败 / 重试 / 取消）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="g-logonly">
+          <mxGeometry x="20" y="128" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="agent/assistant-stream（实时流）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="g-logonly">
+          <mxGeometry x="20" y="172" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="l5" value="image/offload（卸载决策）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="g-logonly">
+          <mxGeometry x="20" y="216" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="surface" value="SessionSurface（模型表面）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="480" y="110" width="320" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="nodes：表面节点 seq 列表（有序）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="surface">
+          <mxGeometry x="20" y="45" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="contentGeneration（内容代）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="surface">
+          <mxGeometry x="20" y="95" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="replaceGeneration（替换代）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="surface">
+          <mxGeometry x="20" y="145" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="surfaceOp: append | replace { startSeq, endSeq }" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="surface">
+          <mxGeometry x="20" y="195" width="280" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="derive" value="session.deriveMessages()&#xa;按 surface.nodes 增量派生" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="880" y="140" width="320" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="freeze" value="派生并冻结消息列表&#xa;构造不可变 GenerateOptions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="880" y="260" width="320" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="llm" value="llm.stream()&#xa;模型看到的完整上下文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="880" y="380" width="320" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="compact-replace" value="压缩摘要 user/message&#xa;surfaceOp: replace [startSeq, endSeq]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="480" y="520" width="320" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="note-shadow" value="被遮蔽区间仍留在日志中（fork / resume / 重放可恢复）&#xa;但不再位于表面，因此不进入后续请求" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=8;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="480" y="640" width="320" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="note-invariant" value="不变量：模型可见 ⟺ 已入日志&#xa;（model-visible ⟺ logged）" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#f5f5f5;strokeColor=#666666;align=left;spacingLeft=8;spacingRight=8;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="880" y="50" width="320" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="图例" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="640" width="320" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="会话日志 / 表面事件" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="28" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="log-only 事件（不可见）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="52" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="表面 / 模型请求" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="76" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="派生过程" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="100" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="se1" value="append 进表面" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;labelBackgroundColor=#ffffff;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="g-surface" target="surface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se2" value="不进入表面" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;dashed=1;strokeColor=#666666;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" parent="1" source="g-logonly" target="surface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se3" value="surface.nodes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="surface" target="derive">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;" edge="1" parent="1" source="derive" target="freeze">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;" edge="1" parent="1" source="freeze" target="llm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se6" value="替换被遮蔽区间" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="compact-replace" target="surface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="compact-replace" target="note-shadow">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

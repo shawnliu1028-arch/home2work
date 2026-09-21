@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="compaction-entry-structure" id="entry-structure">
+    <mxGraphModel dx="1100" dy="900" grid="1" gridSize="10" page="1" pageWidth="1050" pageHeight="1000">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="pi 压缩前后会话条目结构对比" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="10" width="500" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="band1" value="压缩前 (原始条目)" style="swimlane;html=1;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="900" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c0" value="hdr&#xa;#0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="20" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c1" value="usr&#xa;#1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="105" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c2" value="ass&#xa;#2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="190" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c3" value="tool&#xa;#3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="275" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c4" value="usr&#xa;#4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="360" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c5" value="ass&#xa;#5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="445" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c6" value="tool&#xa;#6" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="530" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c7" value="tool&#xa;#7" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="615" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c8" value="ass&#xa;#8" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="700" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1c9" value="tool&#xa;#9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band1">
+          <mxGeometry x="785" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b1br1" value="" style="html=1;endArrow=none;strokeColor=#b85450;strokeWidth=2;" edge="1" parent="band1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="105" y="112" as="sourcePoint" />
+            <mxPoint x="340" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b1lb1" value="messagesToSummarize&#xa;(待 LLM 摘要)" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#b85450;" vertex="1" parent="band1">
+          <mxGeometry x="110" y="116" width="230" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="b1br2" value="" style="html=1;endArrow=none;strokeColor=#82b366;strokeWidth=2;" edge="1" parent="band1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="112" as="sourcePoint" />
+            <mxPoint x="850" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b1lb2" value="kept messages (近期保留, 不进入摘要)" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#82b366;" vertex="1" parent="band1">
+          <mxGeometry x="420" y="116" width="440" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="b1fk" value="" style="html=1;endArrow=block;endFill=1;endSize=8;strokeColor=#b85450;strokeWidth=2;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="band1" target="b1c4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="392" y="152" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b1fkt" value="firstKeptEntryId (entry #4)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#b85450;" vertex="1" parent="band1">
+          <mxGeometry x="292" y="156" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="band2" value="压缩后 (追加新条目)" style="swimlane;html=1;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="950" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c0" value="hdr&#xa;#0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="20" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c1" value="usr&#xa;#1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="105" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c2" value="ass&#xa;#2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="190" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c3" value="tool&#xa;#3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="275" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c4" value="usr&#xa;#4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="360" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c5" value="ass&#xa;#5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="445" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c6" value="tool&#xa;#6" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="530" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c7" value="tool&#xa;#7" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="615" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c8" value="ass&#xa;#8" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="700" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c9" value="tool&#xa;#9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band2">
+          <mxGeometry x="785" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2c10" value="cmp&#xa;#10" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="band2">
+          <mxGeometry x="870" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b2br1" value="" style="html=1;endArrow=none;strokeColor=#b85450;strokeWidth=2;" edge="1" parent="band2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="105" y="112" as="sourcePoint" />
+            <mxPoint x="340" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b2lb1" value="不再发送给 LLM (已被摘要替代)" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#b85450;" vertex="1" parent="band2">
+          <mxGeometry x="105" y="116" width="230" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="b2br2" value="" style="html=1;endArrow=none;strokeColor=#82b366;strokeWidth=2;" edge="1" parent="band2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="112" as="sourcePoint" />
+            <mxPoint x="935" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b2lb2" value="发送给 LLM (自 firstKeptEntryId 起的消息)" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#82b366;" vertex="1" parent="band2">
+          <mxGeometry x="420" y="116" width="500" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="b2note" value="cmp = CompactionEntry: summary + firstKeptEntryId + tokensBefore + usage + details" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#d6b656;" vertex="1" parent="band2">
+          <mxGeometry x="20" y="156" width="500" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="band3" value="LLM 实际所见 (下一次请求的上下文)" style="swimlane;html=1;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="730" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c0" value="system&#xa;(prompt)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="20" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c1" value="summary&#xa;(from cmp)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="105" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c2" value="usr&#xa;#4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="190" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c3" value="ass&#xa;#5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="275" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c4" value="tool&#xa;#6" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="360" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c5" value="tool&#xa;#7" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="445" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c6" value="ass&#xa;#8" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="530" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3c7" value="tool&#xa;#9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="band3">
+          <mxGeometry x="615" y="60" width="65" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="b3br1" value="" style="html=1;endArrow=none;strokeColor=#82b366;strokeWidth=2;" edge="1" parent="band3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="105" y="112" as="sourcePoint" />
+            <mxPoint x="170" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b3lb1" value="摘要 (替代消息 #1-#3)" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#82b366;" vertex="1" parent="band3">
+          <mxGeometry x="65" y="116" width="145" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="b3br2" value="" style="html=1;endArrow=none;strokeColor=#6c8ebf;strokeWidth=2;" edge="1" parent="band3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="112" as="sourcePoint" />
+            <mxPoint x="680" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="b3lb2" value="自 firstKeptEntryId 起的消息" style="text;html=1;align=center;verticalAlign=top;fontSize=11;fontColor=#6c8ebf;" vertex="1" parent="band3">
+          <mxGeometry x="240" y="116" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="b3note" value="system 之后紧跟摘要, 再接保留消息" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="band3">
+          <mxGeometry x="20" y="156" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1" value="追加 CompactionEntry" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=11;" edge="1" parent="1" source="band1" target="band2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="-90" y="0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="eb2" value="重建上下文" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=11;" edge="1" parent="1" source="band2" target="band3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="-90" y="0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend" value="图例" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="850" width="220" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="34" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="头部 / system prompt" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="32" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="58" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="会话消息" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="56" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="82" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="CompactionEntry" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="80" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="106" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="摘要 (LLM 所见)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="104" width="160" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
