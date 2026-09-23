@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Half-Duplex链路" id="halfduplex">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" page="1" pageWidth="1600" pageHeight="1660" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="τ-bench 半双工 (Half-Duplex) 仿真运行链路" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="700" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cli" value="① CLI 入口&#xa;src/tau2/cli.py :: run_command&#xa;解析参数 → TextRunConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg" value="TextRunConfig&#xa;(半双工运行配置)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="420" y="60" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="runner" value="② Runner 批量调度 (src/tau2/runner/)" style="swimlane;startSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="240" width="1500" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="run_domain" value="run_domain()&#xa;batch.py&#xa;校验 config / 加载 tasks / 过滤" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="runner">
+          <mxGeometry x="20" y="60" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="run_tasks" value="run_tasks()&#xa;batch.py&#xa;trials × tasks 并发 / seed / 重试" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="runner">
+          <mxGeometry x="330" y="60" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="run_single" value="run_single_task()&#xa;batch.py&#xa;构造 → 执行 → 评估" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="runner">
+          <mxGeometry x="650" y="60" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="build_orch" value="build_text_orchestrator()&#xa;build.py&#xa;build_environment / agent / user" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="runner">
+          <mxGeometry x="650" y="190" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="registry" value="Registry (registry.py)&#xa;get_agent_factory&#xa;get_user_constructor&#xa;get_env_constructor&#xa;get_tasks_loader" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=12;" vertex="1" parent="runner">
+          <mxGeometry x="960" y="60" width="300" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="checkpoint" value="checkpoint.py&#xa;results.json 原子写 / 断点续跑" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;" vertex="1" parent="runner">
+          <mxGeometry x="330" y="190" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="orch" value="③ Orchestrator — 半双工主循环 (src/tau2/orchestrator/orchestrator.py)" style="swimlane;startSize=40;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="1500" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="init" value="initialize()&#xa;env.set_state 初始化 DB&#xa;开场白 / message_history 恢复" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="orch">
+          <mxGeometry x="20" y="80" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="step" value="step() 主循环 L823–900&#xa;from_role / to_role / message&#xa;三分支路由" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;" vertex="1" parent="orch">
+          <mxGeometry x="20" y="220" width="220" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="agent" value="LLMAgent (agent/llm_agent.py)&#xa;generate_next_message()&#xa;policy + tools → LLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="orch">
+          <mxGeometry x="320" y="80" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="UserSimulator (user/user_simulator.py)&#xa;flip_roles + generate_next_message()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="orch">
+          <mxGeometry x="320" y="240" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="env" value="Environment (environment/)&#xa;get_response() → make_tool_call()&#xa;DB + ToolKitBase (requestor 路由)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="orch">
+          <mxGeometry x="760" y="150" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="finalize" value="_finalize()&#xa;汇总成本 → SimulationRun&#xa;(reward_info=None, 评分在 Runner 层)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="orch">
+          <mxGeometry x="1140" y="80" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="termination" value="终止条件&#xa;AGENT_STOP / USER_STOP 哨兵&#xa;MAX_STEPS / TOO_MANY_ERRORS / TIMEOUT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="orch">
+          <mxGeometry x="1140" y="240" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="eval" value="④ Evaluator — 轨迹评分 (src/tau2/evaluator/)" style="swimlane;startSize=40;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="1500" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="evalMain" value="evaluate_simulation()&#xa;非正常终止 → reward = 0&#xa;按 reward_basis 合成" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="eval">
+          <mxGeometry x="20" y="100" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="envEval" value="EnvironmentEvaluator&#xa;重放轨迹 → DB 终态 hash 比对" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontColor=#333333;" vertex="1" parent="eval">
+          <mxGeometry x="360" y="50" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="actEval" value="ActionEvaluator&#xa;期望 action vs 实际 tool calls" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontColor=#333333;" vertex="1" parent="eval">
+          <mxGeometry x="360" y="180" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="comEval" value="CommunicateEvaluator&#xa;必须传达的信息检查" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontColor=#333333;" vertex="1" parent="eval">
+          <mxGeometry x="670" y="50" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nlEval" value="NLAssertionsEvaluator&#xa;LLM 判定自然语言断言" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontColor=#333333;" vertex="1" parent="eval">
+          <mxGeometry x="670" y="180" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="reward" value="RewardInfo&#xa;各分量相乘" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;" vertex="1" parent="eval">
+          <mxGeometry x="980" y="105" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="results" value="results.json&#xa;data/simulations/&lt;run_name&gt;/" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;" vertex="1" parent="eval">
+          <mxGeometry x="1280" y="90" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="图例" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1390" width="320" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="入口 / 配置" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="28" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="Runner / 对话组件" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="52" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="Registry 注册表" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="76" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="主循环 / 路由" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="100" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="126" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5t" value="环境 / 数据文件" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="124" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="150" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg6t" value="终止条件" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="148" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg7" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="174" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg7t" value="Evaluator 评分" style="text;html=1;align=left;verticalAlign=middle;fontColor=#333333;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="172" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cli_cfg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cli" target="cfg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cfg_runner" value="run_domain(config)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.32;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="cfg" target="runner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_domain_tasks" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="run_domain" target="run_tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_tasks_single" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="run_tasks" target="run_single">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_single_build" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="run_single" target="build_orch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_reg_build" value="工厂解析组件" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="registry" target="build_orch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_tasks_ckpt" value="checkpoint / resume" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="run_tasks" target="checkpoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_build_orchC" value="组装 Orchestrator" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5167;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="build_orch" target="orch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_orch_eval" value="SimulationRun" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.4867;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="orch" target="eval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_init_agent" value="开场白注入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="init" target="agent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_step_user" value="① → USER" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="step" target="user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_step_agent" value="② → AGENT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=1;exitY=0.2;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" parent="1" source="step" target="agent">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="846" />
+              <mxPoint x="340" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_step_env" value="③ → ENV 执行工具" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="step" target="env">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="985" />
+              <mxPoint x="1100" y="985" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_step_term" value="stop 哨兵 / 终止检查" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="step" target="termination">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="130" y="924" />
+              <mxPoint x="130" y="995" />
+              <mxPoint x="1160" y="995" />
+              <mxPoint x="1160" y="890" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_user_agent" value="普通消息 → AGENT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="user" target="agent">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_agent_env" value="tool_calls (assistant)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="agent" target="env">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_user_env" value="tool_calls (user)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="user" target="env">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_env_agent" value="ToolMessage → agent" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="env" target="agent">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="655" />
+              <mxPoint x="500" y="655" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_env_user" value="ToolMessage → user" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.4;entryDx=0;entryDy=0;" edge="1" parent="1" source="env" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1025" y="880" />
+              <mxPoint x="660" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_term_final" value="循环终止" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endSize=8;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="termination" target="finalize">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eval_env" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="evalMain" target="envEval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eval_act" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="evalMain" target="actEval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_eval_com" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.45;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="evalMain" target="comEval">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="1185" />
+              <mxPoint x="680" y="1130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_eval_nl" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="evalMain" target="nlEval">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="1200" />
+              <mxPoint x="700" y="1260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_envreward" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="envEval" target="reward">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="1085" />
+              <mxPoint x="1120" y="1085" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_com_reward" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="comEval" target="reward">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="990" y="1130" />
+              <mxPoint x="990" y="1165" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_nl_reward" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.2;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="nlEval" target="reward">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1060" y="1260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_act_reward" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.8;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="actEval" target="reward">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="1310" />
+              <mxPoint x="1180" y="1310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_reward_results" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="reward" target="results">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
