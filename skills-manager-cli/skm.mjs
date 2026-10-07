@@ -137,6 +137,34 @@ function collectionSkillNames(collection) {
   return fs.readdirSync(dir, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name).sort();
 }
 
+// 合集名同时是中心存储下的一级目录名，必须能安全地当单个路径段用。
+// 采用「拒绝非法」而非白名单：合集名可以是任意语言，不该被字符集限死。
+function validateCollectionName(name, label = '合集名') {
+  const s = String(name ?? '');
+  if (!s) throw new Error(`${label}不能为空`);
+  if (s !== s.trim()) throw new Error(`${label}首尾不能有空白："${s}"`);
+  if (s === '.' || s === '..') throw new Error(`${label}不能是 "." 或 ".."`);
+  if (/[\\/:*?"<>|\x00-\x1f]/.test(s)) {
+    throw new Error(`${label}含非法字符（不得含 \\ / : * ? " < > | 或控制字符）："${s}"`);
+  }
+  return s;
+}
+
+// 目录移动：同盘 rename 原子完成；跨盘或目标被占用时降级为拷贝 + 删源
+function moveDir(from, to) {
+  try {
+    fs.renameSync(from, to);
+  } catch {
+    copyDir(from, to);
+    fs.rmSync(from, { recursive: true, force: true });
+  }
+}
+
+// enablement 条目序列化：无排除项时回到字符串写法，配置文件保持简洁
+function serializeEntry(e) {
+  return e.exclude.length ? { collection: e.collection, exclude: e.exclude } : e.collection;
+}
+
 // ---------- links ----------
 
 function pathKey(p) {
@@ -406,7 +434,9 @@ function resolveSource(src) {
   }
   const m = src.match(/^(?:https?:\/\/github\.com\/|gh:)?([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/);
   if (m) {
-    return { type: 'git', url: `https://github.com/${m[1]}/${m[2]}.git`, name: m[2] };
+    // 合集名默认取 owner-repo（ADR-0005）：只取仓库名时，mattpocock/skills、vercel-labs/skills、
+    // humanlayer/skills 这类同名仓库会互相撞名，第二个起就装不进来。
+    return { type: 'git', url: `https://github.com/${m[1]}/${m[2]}.git`, name: `${m[1]}-${m[2]}` };
   }
   throw new Error(`无法识别的来源 "${src}"：请提供本地路径或 GitHub 仓库（owner/repo 或完整 URL）`);
 }
@@ -609,6 +639,62 @@ async function cmdRemove(cfg, lock, positional, flags) {
   }
   saveConfig(cfg);
   console.log(`合集 ${coll} 已删除`);
+}
+
+// 重命名合集：合集身份在锁文件的键上，目录名只是它的派生——改名必须四处同步，
+// 否则锁与磁盘错位（正是「手工改目录名后 list 仍显示旧名」的成因）。
+function cmdRename(cfg, lock, positional, flags) {
+  const [oldName, newNameRaw] = positional;
+  if (!oldName || !newNameRaw) throw new Error('用法: skm rename <旧合集名> <新合集名> [--dry-run]');
+  if (!lock.collections[oldName]) throw new Error(`合集 "${oldName}" 未安装`);
+  const newName = validateCollectionName(newNameRaw, '新合集名');
+  if (newName === oldName) throw new Error(`新旧名字相同（${oldName}），无需重命名`);
+  if (lock.collections[newName]) throw new Error(`合集 "${newName}" 已存在，请换一个名字`);
+
+  const from = centralCollectionDir(oldName);
+  const to = centralCollectionDir(newName);
+  const fromExists = fs.existsSync(from);
+  const toExists = fs.existsSync(to);
+  if (!fromExists && !toExists) {
+    throw new Error(`合集 "${oldName}" 的中心目录不存在（${from}）。状态已损坏，请用 skm remove ${oldName} --force 清理后重装`);
+  }
+  if (toExists && fromExists) throw new Error(`目标目录已存在（${to}），请先处理它或换一个名字`);
+
+  // 目录已被手工改名到目标位置（锁键没跟着改）→ 采纳它，只迁移元数据；这是修复状态的正路
+  const adopted = !fromExists;
+  if (flags['dry-run']) {
+    console.log(`[dry-run] 将合集 ${oldName} 重命名为 ${newName}${adopted ? '（目标目录已存在，仅迁移元数据）' : `（移动目录 ${from} → ${to}）`}`);
+    return;
+  }
+
+  if (!adopted) moveDir(from, to);
+
+  lock.collections[newName] = lock.collections[oldName];
+  delete lock.collections[oldName];
+  saveLock(lock);
+
+  // 启用清单改指新名；受影响 agent 的链接目标随中心路径变化，需重建
+  const affected = [];
+  for (const agent of Object.keys(cfg.agents)) {
+    const entries = enabledCollections(cfg, agent);
+    if (!entries.some((e) => e.collection === oldName)) continue;
+    cfg.enablement[agent] = entries
+      .map((e) => (e.collection === oldName ? { collection: newName, exclude: e.exclude } : e))
+      .map(serializeEntry);
+    affected.push(agent);
+  }
+  saveConfig(cfg);
+
+  for (const agent of affected) {
+    const s = syncAgentLinks(cfg, agent, lock);
+    console.log(`${agent}: 重建 ${s.created}，移除 ${s.removed}`);
+  }
+
+  const count = Object.keys(lock.collections[newName].skills).length;
+  console.log(
+    `合集 ${oldName} → ${newName}${adopted ? '（已采纳手工改名的目录）' : ''}，技能 ${count} 个` +
+      (affected.length ? `，链接已重同步: ${affected.join(', ')}` : '，无 agent 启用，未建链接')
+  );
 }
 
 async function cmdEnable(cfg, lock, positional, flags) {
@@ -987,6 +1073,18 @@ const COMMANDS = {
     ],
     examples: ['skm remove my-skills'],
   },
+  rename: {
+    usage: 'skm rename <旧合集名> <新合集名>',
+    summary: '重命名合集：锁文件、中心目录、启用清单与全部链接一并迁移',
+    details: [
+      '合集名同时是中心存储下的一级目录名（~/.agents/skills/<合集名>），改名会移动目录并重建相关链接。',
+      '直接改目录名是无效的——合集身份记在锁文件里，skm list 读的就是它；请改用本命令。',
+      '若目录已被手工改名（锁文件与磁盘错位），本命令会采纳既有目录、只迁移元数据，用于修复状态。',
+      '参数:',
+      '  --dry-run  只显示将做什么，不做任何改动',
+    ],
+    examples: ['skm rename skills humanlayer-skills', 'skm rename my-coll my-new-name --dry-run'],
+  },
   help: {
     usage: 'skm help [命令]',
     summary: '显示本帮助；指定命令名可查看该命令的详细参数',
@@ -1094,6 +1192,9 @@ async function main() {
     case 'remove':
       await cmdRemove(cfg, lock, positional, flags);
       break;
+    case 'rename':
+      cmdRename(cfg, lock, positional, flags);
+      break;
     case 'link':
       process.exit(syncAllLinks(cfg, lock) ? 0 : 1);
       break;
@@ -1124,4 +1225,4 @@ if (runningAsMain()) {
   });
 }
 
-export { parseSelection };
+export { parseSelection, resolveSource, validateCollectionName };

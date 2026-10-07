@@ -113,6 +113,7 @@ skm disable some-skills             # 交互式：只列出已启用该合集的
 
 skm list                            # 查看全部合集、技能、各 agent 启用状态
 skm update                          # 一键更新所有合集（上游默认分支 HEAD）
+skm rename skills humanlayer-skills # 给合集改名（合集名即中心存储目录名，改名请用它而非手改目录）
 
 skm agent add cursor .cursor/skills # 注册新 agent（默认只内置 claude，其余按需添加）
 skm agent list                      # 查看已注册 agent 及其启用情况
@@ -135,6 +136,7 @@ skm help                            # 查看命令总览；skm help add 看单�
 | `--dry-run` | 只列出将安装什么，不做任何改动 |
 
 - 来源支持三种写法：本地路径（`D:\my-skills`，含 `.git` 时按 git 仓库克隆以保真内容）、`owner/repo`、完整 GitHub URL。
+- **合集名**：GitHub 来源默认取 `<owner>-<repo>`（`anthropics/skills` → `anthropics-skills`），避免多个同名仓库（`mattpocock/skills`、`vercel-labs/skills`…）互相撞名；本地来源取目录名。不合意就用 `skm rename` 改名。
 - **启用给谁**：不传 `--enable`/`--no-enable` 时，交互终端会列出全部 agent 供多选（输入编号，`a`=全部，回车=不启用）；非交互模式（脚本/管道）下会报错，必须显式传 `--enable` 或 `--no-enable`。
 - 本地来源为**拷贝语义**：之后原路径的修改需 `update` 才会进入中心存储。
 - 合集内或与已启用合集之间存在同名技能 → 当场报错，不自动改名。
@@ -186,6 +188,20 @@ skm agent remove cursor --force         # 注销：链接与启用记录一并�
 
 一步删净：中心存储目录 + 所有 agent 中的对应链接 + 锁条目 + 启用清单条目。交互终端下会确认；非交互（脚本）必须 `--force`。
 
+### `skm rename <旧合集名> <新合集名> [--dry-run]`
+
+给合集改名。**合集名同时是中心存储下的一级目录名**（`~/.agents/skills/<合集名>`），因此本命令会把四处一起改：锁文件键、中心目录、启用清单条目、各 agent 中受影响的链接（并立即重同步）。
+
+- 直接改目录名**不起作用**：合集身份记在锁文件里，`skm list` 读的就是它——手改目录只会让锁与磁盘错位（该合集对 link/enable 变成空壳）。
+- 若目录已被手工改名（锁文件与磁盘错位），本命令会**采纳**既有目录、只迁移元数据，这正是修复这类状态的正路。
+- 新旧同名、目标名已被别的合集占用、名字含 `/` `\` `:` `*` `?` `"` `<` `>` `|` 等非法字符时当场报错，不留半成品。
+- `--dry-run` 只打印将做什么，不做任何改动。
+
+```bash
+skm rename skills humanlayer-skills        # 把装错的默认名改掉
+skm rename my-coll my-new-name --dry-run   # 先预览
+```
+
 ### `skm link`
 
 幂等全量同步：按启用清单重建/修复/清理所有 agent 的链接。迁移后、手改配置后、任何不确定的时刻跑它都安全。永不触碰 agent 目录中的原生真实目录（非链接条目），同名时跳过并报告。
@@ -214,6 +230,7 @@ skm agent remove cursor --force         # 注销：链接与启用记录一并�
 
 - **`[跳过] <agent>/<技能>：同名原生技能已存在`** —— 该 agent 目录下有 agent 自己装的同名技能，工具不覆盖。想用中心版本就先删原生目录。
 - **`同名冲突：技能 "x" 同时来自已启用合集 A 和 B`** —— 二选一：`disable` 其中一个合集。
+- **手改了合集目录名，`skm list` 仍显示旧名** —— 合集身份取自锁文件而非目录名，手改目录无效。用 `skm rename <旧名> <新名>` 迁移；目录已经手改过时它会采纳既有目录、只迁移元数据。
 - **Windows 上链接创建失败** —— 正常不会发生（junction 免特权）；若 agent 目录在网络盘等不支持 junction 的位置，把该 agent 的 `skillsDir` 改到本地盘。
 - **`git clone 失败`** —— 检查网络/仓库权限；私有仓库需已配置 git 凭据。
 - 想在隔离环境试用（不影响真实目录）——pwsh7 写法：
