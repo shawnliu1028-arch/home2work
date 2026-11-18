@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkocean_official_landing_page=self.webpackChunkocean_official_landing_page||[]).push([["84"],{67184:function(a,n,c){c.r(n);var e=c(79474);n.default=()=>((0,e.useEffect)(()=>{window.location.replace("/saep".concat(window.location.search).concat(window.location.hash))},[]),null)}}]);
